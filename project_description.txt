@@ -1,0 +1,50 @@
+E-Commerce API Backend (FastAPI, PostgreSQL, Redis, Docker)
+
+Tech Stack Overview
+- Backend: Python 3.11+, FastAPI, Uvicorn (optionally with Gunicorn)
+- ORM/DB: SQLAlchemy 2.x (async), Alembic migrations, asyncpg driver, PostgreSQL (Neon)
+- Validation: Pydantic v2
+- Cache: Redis (Dockerized), redis-py/aioredis client
+- Auth: JWT (access + refresh), OAuth2 password flow, passlib+bcrypt, basic role management
+- Tooling: Docker & Docker Compose; env via python-dotenv/pydantic-settings; make targets
+- Quality: pytest, httpx/FastAPI TestClient, ruff/flake8, black, mypy (optional)
+- Logging/Docs: Python logging (structured/JSON), OpenTelemetry optional, FastAPI docs/Redoc
+
+Project Description (High-Level)
+Scalable RESTful backend for an e-commerce platform handling product catalog, carts, orders, and auth with performance, reliability, and maintainability in mind. Core features include:
+- User & Auth: Registration/login, JWT auth with access+refresh, role-based access, optional email verification/password reset.
+- Product & Catalog: CRUD for products/categories/inventory (admin), public listing/filter/search/pagination/sorting, variants/attributes.
+- Shopping Cart & Wishlist: Persistent DB-backed cart per user; add/remove/update items; view summary; optional wishlist/favorites.
+- Orders & Checkout: Create order from cart with stock validation; lifecycle PENDING→PAID→SHIPPED→COMPLETED/CANCELED; payment gateway stub; invoices/history.
+- Inventory & Stock: Track quantities per product/variant; safe decrement on confirmed orders; admin restock/update endpoints.
+- Admin & Reporting: Admin-only management of products/categories/users/orders; dashboard-style metrics endpoints.
+
+Architecture & Design
+- Layered: FastAPI routers (auth, users, products, cart, orders, admin) → services (UserService, ProductService, etc.) → repositories/ORM (SQLAlchemy models, Alembic migrations) → PostgreSQL (Neon).
+- Example schema: users, products, categories, carts/cart_items, orders/order_items, inventory.
+- Async endpoints and DB access; pagination; proper indexing; gzip/keep-alive via ASGI/proxy.
+
+Caching & Performance (Redis)
+- Redis via Docker (or managed later); cache product listings/details with TTL; optional user cart/profile caching.
+- Key patterns: product:{id}; products:list:{filters_hash}; user:{id}:cart.
+- Invalidation on product update/delete or stock change.
+
+Security & Resilience
+- JWT validation and role checks; Pydantic validation; CORS; secrets via env.
+- Graceful startup/shutdown for DB/Redis; retry logic; centralized exception handling.
+
+Developer Experience
+- docker-compose for api/db/redis/pgadmin; make targets (run/test/migrate etc.).
+- Auto-generated Swagger UI (/docs) and Redoc (/redoc); optional Postman/OpenAPI export.
+
+What we have done
+- Initialized repository structure with FastAPI scaffold, versioned routers, placeholder services/repositories/models/schemas/utilities/middleware/events.
+- Added Dockerfile/docker-compose.yml skeletons, Makefile targets, .env.example, pyproject.toml config, Alembic boilerplate, infra/README, and test placeholders.
+
+What’s left to do
+- Populate dependencies and install them; wire settings, lifespan events, and logging.
+- Implement database models fully, set up Alembic migrations, and configure DB connections/env vars.
+- Build repositories/services with business logic (auth, products, categories, cart, orders, admin) and integrate with routers.
+- Add Redis cache client and caching/invalidation rules; optionally rate limiting/session blacklist.
+- Flesh out authentication (JWT issuance/verification, password hashing, roles) and security middleware.
+- Write tests (unit/integration), add lint/format/type-check config, and finalize Docker/Make workflows for local/prod.

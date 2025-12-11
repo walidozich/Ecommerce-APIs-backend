@@ -1,0 +1,23 @@
+[project]
+name = "ecommerce_api_backend"
+version = "0.1.0"
+description = "FastAPI e-commerce backend (scaffold)"
+requires-python = ">=3.11"
+dependencies = []
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.black]
+target-version = ["py311"]
+line-length = 88
+
+[tool.ruff]
+line-length = 88
+extend-select = ["B", "I"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+addopts = "-q"
